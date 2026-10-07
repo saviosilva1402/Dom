@@ -1,8 +1,8 @@
 // Métodos DOM
 const form = document.querySelector("#form-tarefa");
 const inputTarefa = document.querySelector("#tarefa");
-const listaTarefas = document.querySelector("#contador");
-const contador = document.querySelector("#lista-tarefas");
+const contador = document.querySelector("#contador");
+const listaTarefas = document.querySelector("#lista-tarefas");
 
 // Resgate de tarefas do localStorage
 
@@ -33,13 +33,15 @@ function adicionarTarefa(event) {
 }
 
 function renderizarTarefas() {
+    listaTarefas.textContent = "";
     tarefas.forEach(function (tarefa, indice) {
         const linha = document.createElement("tr");
+        
         const colunaNumero = document.createElement("td");
         colunaNumero.textContent = indice + 1;
+        
         const colunaNome = document.createElement("td");
         colunaNome.textContent = tarefa.texto;
-
         if (tarefa.concluida) {
             colunaNome.classList.add(
                 "text-decoration-line-through",
@@ -54,9 +56,31 @@ function renderizarTarefas() {
             colunaStatus.innerHTML = '<span class="badge text-bg-warning">Pendente</span>';
         }
 
-        linha.appendChild(colunaNumero)
+        const colunaAcoes = document.createElement("td");
+
+        const botaoConcluir = document.createElement("button");
+        botaoConcluir.textContent =
+            tarefa.concluida
+            ? "Reabrir"
+            : "Concluir";
+            botaoConcluir.classList.add(
+            );
+            botaoConcluir.addEventListener(
+                "click",
+                function () {
+                    alterarStatus(tarefa.id);
+                }
+            );
+
+        const botaoEditar = document.createElement("button");
+        const botaoExcluir = document.createElement("button");
+
+        colunaAcoes.appendChild(botaoConcluir)
+
+        linha.appendChild(colunaNumero);
+         linha.appendChild(colunaStatus);
         linha.appendChild(colunaNome);
-        linha.appendChild(colunaStatus);
+        linha.appendChild(colunaAcoes);
 
         listaTarefas.appendChild(linha);
     });
@@ -68,3 +92,15 @@ function salvarTarefa () {
     JSON.stringify(tarefas) 
 );
 }
+
+
+function alterarStatus(id) {
+    tarefas.forEach(function (tarefa) { 
+        if (tarefa.id === id) {
+            tarefa.concluida = !tarefa.concluida;
+        }
+    })
+    salvarTarefa();
+    renderizarTarefas();
+}
+renderizarTarefas();
